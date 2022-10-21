@@ -1,15 +1,10 @@
 package com.acme.stocks;
 
-import okhttp3.*;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.PrintSinkFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.*;
-import java.security.cert.CertificateException;
-import java.time.LocalDateTime;
 
 public class StockBuyer {
 
