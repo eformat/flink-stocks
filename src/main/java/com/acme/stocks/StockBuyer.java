@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 public class StockBuyer {
 
-    static String url = "http://localhost:8080/quotes/stream"; //https://flask-stocks-flask-stocks.apps.openshift-411-x24tf.demo.redhatlabs.dev";
+    static String url = "http://localhost:8080/quotes/stream";
     static Logger logger = LoggerFactory.getLogger(StockBuyer.class);
 
     private static DataStream<String> createSourceFromApplicationProperties(final StreamExecutionEnvironment env) {
