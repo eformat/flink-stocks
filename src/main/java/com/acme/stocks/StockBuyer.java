@@ -1,29 +1,65 @@
 package com.acme.stocks;
 
+import org.acme.data.Buy;
+import org.acme.data.Quote;
+import org.acme.data.Quotes;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.PrintSinkFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 
 public class StockBuyer {
 
     static String url = "http://localhost:8080/quotes/stream";
     static Logger logger = LoggerFactory.getLogger(StockBuyer.class);
 
-    private static DataStream<String> createSourceFromApplicationProperties(final StreamExecutionEnvironment env) {
-        return env.addSource(new SSESource(logger)).name("SSE Source").uid("SSE Source").setParallelism(1);
+    private static DataStream<Quote> createSourceFromApplicationProperties(final StreamExecutionEnvironment env, String symbol) {
+        return env.addSource(new SSESource(logger))
+                .map(new MapFunction<String, Quote>() {
+                    private String[] tokens;
+
+                    @Override
+                    public Quote map(String value) throws Exception {
+                        Jsonb jsonb = JsonbBuilder.create();
+                        Quotes quotes = jsonb.fromJson(value, Quotes.class);
+                        return quotes.getQuotes(symbol);
+                    }
+                })
+                .name("SSE Source " + symbol)
+                .uid("SSE Source " + symbol)
+                .setParallelism(1);
     }
 
     public static void main(String[] args) throws Exception {
         //StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
 
-        DataStream<String> input = createSourceFromApplicationProperties(env);
-        logger.info("SseEventSource Input stream created: " + input.toString());
-        input.addSink(new PrintSinkFunction<>());
-        //input.print();
-        env.execute("Stock Buyer");
+        DataStream<Quote> nflxPrices = createSourceFromApplicationProperties(env, "NFLX");
+        DataStream<Quote> rhtPrices = createSourceFromApplicationProperties(env, "RHT");
+        //prices.addSink(new PrintSinkFunction<>());
 
+        DataStream<Buy> nflx = nflxPrices
+                .keyBy(Quote::getSymbol)
+                .process(new BuyFunction())
+                .name("NFLX quote");
+
+        nflx
+                .addSink(new BuySink())
+                .name("NFLX buy");
+
+        DataStream<Buy> rht = rhtPrices
+                .keyBy(Quote::getSymbol)
+                .process(new BuyFunction())
+                .name("RHT quote");
+
+        rht
+                .addSink(new BuySink())
+                .name("RHT buy");
+
+        env.execute("Stock Buyer");
     }
 }

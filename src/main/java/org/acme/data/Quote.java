@@ -1,5 +1,7 @@
 package org.acme.data;
 
+import java.util.Objects;
+
 public class Quote {
 
     private String exchange;
@@ -100,6 +102,19 @@ public class Quote {
 
     public void setVolume(int volume) {
         this.volume = volume;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Quote quote = (Quote) o;
+        return period == quote.period && stocks == quote.stocks && Double.compare(quote.price, price) == 0 && Double.compare(quote.bid, bid) == 0 && Double.compare(quote.ask, ask) == 0 && share == quote.share && Double.compare(quote.value, value) == 0 && volume == quote.volume && Objects.equals(exchange, quote.exchange) && Objects.equals(name, quote.name) && Objects.equals(symbol, quote.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(exchange, name, period, symbol, stocks, price, bid, ask, share, value, volume);
     }
 
     @Override

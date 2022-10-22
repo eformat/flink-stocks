@@ -11,6 +11,13 @@ public class Quotes {
         return quotes;
     }
 
+    public Quote getQuotes(String symbol) {
+        for (Quote q: getQuotes()) {
+            if (q.getSymbol().equalsIgnoreCase(symbol))
+                return q;
+        }
+        return new Quote();
+    }
     public void setQuotes(List<Quote> quotes) {
         this.quotes = quotes;
     }
