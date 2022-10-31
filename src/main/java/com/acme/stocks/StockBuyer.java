@@ -14,7 +14,6 @@ import javax.json.bind.JsonbBuilder;
 
 public class StockBuyer {
 
-    static String url = "http://localhost:8080/quotes/stream";
     static Logger logger = LoggerFactory.getLogger(StockBuyer.class);
 
     private static DataStream<Quote> createSourceFromApplicationProperties(final StreamExecutionEnvironment env, String symbol) {
