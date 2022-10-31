@@ -31,21 +31,20 @@ public class BuyFunction
         // Get the current state for the current key
         Boolean lastBuyRecommendation = shouldBuy.value();
 
-//        if (lastBuyRecommendation != null) {
-//            Buy buy = new Buy();
-//            buy.setQuote(quote);
-//            collector.collect(buy);
-//        }
-
-        // Buy Low, Sell High !
-        // If you want to buy a share, you have to pay the ask price.
-        // If you want to sell shares, you'll receive the bid price.
         if (quote.getBid() > quote.getAsk()) {
             // Set the flag to true
             shouldBuy.update(true);
-            Buy buy = new Buy();
-            buy.setQuote(quote);
-            collector.collect(buy);
+
+            // Buy Low, Sell High !
+            // If you want to buy a share, you have to pay the ask price.
+            // If you want to sell shares, you'll receive the bid price.
+
+            // only buy if two buy recommendations in a row
+            //if (lastBuyRecommendation != null && lastBuyRecommendation) {
+                Buy buy = new Buy();
+                buy.setQuote(quote);
+                collector.collect(buy);
+            //}
         } else {
             shouldBuy.update(false);
         }
