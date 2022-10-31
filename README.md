@@ -8,6 +8,15 @@ The Server Sent Event app generates quotes - https://github.com/eformat/quote-ge
 
 We use Flink Data Stream API to process these events.
 
+## A Better BuyFunction
+
+Using stream state we can implement a function where we only buy of the previous bid > ask as well, in `BuyFunction.java` uncomment
+
+```java
+    if (lastBuyRecommendation != null && lastBuyRecommendation) {
+        // Buy
+    }
+```
 
 ## Pulsar Sink
 
