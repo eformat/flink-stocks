@@ -35,12 +35,11 @@ public class StockBuyer {
     }
 
     public static void main(String[] args) throws Exception {
-        //StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        //StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
 
         DataStream<Quote> nflxPrices = createSourceFromApplicationProperties(env, "NFLX");
         DataStream<Quote> rhtPrices = createSourceFromApplicationProperties(env, "RHT");
-        //prices.addSink(new PrintSinkFunction<>());
 
         DataStream<Buy> nflx = nflxPrices
                 .keyBy(Quote::getSymbol)
@@ -49,6 +48,7 @@ public class StockBuyer {
 
         nflx
                 .addSink(new BuySink())
+                //.addSink(new PulsarBuySink("NFLX"))
                 .name("NFLX buy");
 
         DataStream<Buy> rht = rhtPrices
@@ -58,6 +58,7 @@ public class StockBuyer {
 
         rht
                 .addSink(new BuySink())
+                //.addSink(new PulsarBuySink("RHT"))
                 .name("RHT buy");
 
         env.execute("Stock Buyer");
