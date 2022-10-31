@@ -21,7 +21,6 @@ public class PulsarBuySink implements SinkFunction<Buy> {
 
     private String name;
     private PulsarClient pulsarClient;
-    private Producer<Buy> orderProducer;
 
     private HashMap<String, Producer<Buy>> producers = new HashMap<>();
     private AtomicInteger count = new AtomicInteger();
@@ -32,21 +31,23 @@ public class PulsarBuySink implements SinkFunction<Buy> {
 
     public void invoke(Buy value, Context context) {
         logger.info(value.toString());
+        Producer<Buy> producer;
 
         if (! producers.containsKey(name)) {
             try {
                 pulsarClient = PulsarClient.builder().serviceUrl("pulsar://localhost:6650").build();
-                orderProducer
+                producer
                         = createProducer(pulsarClient, name, "orders", Buy.class);
-                producers.put(name, orderProducer);
+                producers.put(name, producer);
 
             } catch (PulsarClientException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            Producer<Buy> producer = producers.get(name);
-            produceMessage(producer, name + String.valueOf(count.getAndIncrement()), value, new AtomicInteger(1));
+            producer = producers.get(name);
         }
+        // produce
+        produceMessage(producer, name + String.valueOf(count.getAndIncrement()), value, new AtomicInteger(1));
     }
 
     private static <T> Producer<T> createProducer(PulsarClient pulsarClient,
