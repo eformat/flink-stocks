@@ -8,6 +8,22 @@ The Server Sent Event app generates quotes - https://github.com/eformat/quote-ge
 
 We use Flink Data Stream API to process these events.
 
+## Connect to OpenShift / Remote Flink session
+
+In `StockBuyer::main` uncomment:
+
+```java
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
+```
+
+Port-forward remote rest connection to flink:
+
+```bash
+oc port-forward svc/flink-cluster-mike-rest 8081
+```
+
+Then rerun the example.
+
 ## A Better BuyFunction
 
 Using stream state we can implement a function where we only buy of the previous bid > ask as well, in `BuyFunction.java` uncomment
