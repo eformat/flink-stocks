@@ -26,7 +26,7 @@ Then rerun the example.
 
 ## A Better BuyFunction
 
-Using stream state we can implement a function where we only buy of the previous bid > ask as well, in `BuyFunction.java` uncomment
+Using stream state we can implement a function where we only buy if the previous bid > ask as well, in `BuyFunction.java` uncomment
 
 ```java
     if (lastBuyRecommendation != null && lastBuyRecommendation) {
