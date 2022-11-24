@@ -19,7 +19,7 @@ In `StockBuyer::main` uncomment:
 Port-forward remote rest connection to flink:
 
 ```bash
-oc port-forward svc/flink-cluster-mike-rest 8081
+oc port-forward svc/flink-cluster-user1-rest 8081
 ```
 
 Then rerun the example.

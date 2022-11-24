@@ -34,8 +34,8 @@ public class StockBuyer {
     }
 
     public static void main(String[] args) throws Exception {
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        //StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
+        //StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.createRemoteEnvironment("localhost", 8081, "target/flink-stocks-0.1.jar");
 
         DataStream<Quote> nflxPrices = createSourceFromApplicationProperties(env, "NFLX");
         DataStream<Quote> rhtPrices = createSourceFromApplicationProperties(env, "RHT");
