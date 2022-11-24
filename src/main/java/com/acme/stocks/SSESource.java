@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SSESource extends RichSourceFunction<String> {
 
-    private String url = "https://quote-generator-quote-generator.apps.openshift-411-x24tf.demo.redhatlabs.dev/quotes/stream"; //https://flask-stocks-flask-stocks.apps.openshift-411-x24tf.demo.redhatlabs.dev";
+    private String url = "https://quote-generator-quote-generator.apps.foo.sandbox1962.opentlc.com/quotes/stream"; //https://flask-stocks-flask-stocks.apps.openshift-411-x24tf.demo.redhatlabs.dev";
     private final Logger logger;
 
     public SSESource(Logger logger) {
